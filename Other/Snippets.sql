@@ -27,7 +27,7 @@ FROM products
 WHERE category_id IN (
     SELECT category_id
     FROM categories
-    WHERE category_name = 'Seafood'
+    WHERE category_name = 'Beverages' OR category_name = 'Seafood'
 );
 
 -- Subquery - Exists
@@ -50,9 +50,18 @@ WHERE product_id = ANY(
     WHERE quantity > 100
 );
 
+-- Subquery - All
+SELECT *
+FROM products
+WHERE product_id = ALL(
+    SELECT product_id
+    FROM order_details
+    WHERE quantity > 100
+);
+
 -- Top and Limit
 SELECT TOP 100 * FROM orders;       -- SQL Server
-SELECT * FROM orders LIMIT 100;     -- MYSQL
+SELECT * FROM orders LIMIT 100;     -- MySQL
 
 -- Like
 SELECT * FROM employees WHERE first_name LIKE 'a%';     -- Starts with 'a'
@@ -85,7 +94,7 @@ FROM suppliers;
 -- Count with Where and Having
 SELECT
 	COUNT(1) AS 'Number of customers',
-    country 'Country' 
+    country AS 'Country' 
 FROM customers
 WHERE country IS NOT NULL
 GROUP BY country
@@ -113,7 +122,9 @@ GROUP BY category_name;
 -- String: Concat, Len
 SELECT
 	CONCAT(first_name, ' ', last_name) AS 'Full name',
-    LEN(CONCAT(first_name, ' ', last_name)) AS 'Name length'
+    LEN(CONCAT(first_name, ' ', last_name)) AS 'Name length',
+    UPPER(first_name || ' ' || last_name) AS 'FULL NAME',   -- MySQL
+    LOWER(first_name + ' ' + last_name) AS 'full name'      -- SQL Server
 FROM employees;
 
 -- Math: Round, Floor, Ceil
